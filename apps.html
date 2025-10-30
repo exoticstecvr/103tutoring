@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Apps</title>
+  <link rel="stylesheet" href="./style.css">
+  <style>
+    .apps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;padding:18px}
+    .app-card{background:var(--panel);border-radius:12px;padding:12px;text-align:center;border:1px solid rgba(255,255,255,0.03);cursor:pointer}
+    .app-card img{width:96px;height:96px;border-radius:12px;object-fit:cover;display:block;margin:0 auto 12px}
+    .preview{max-width:1200px;margin:18px auto;border-radius:12px;overflow:hidden;background:#000}
+    .preview iframe{width:100%;height:640px;border:0}
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="brand">
+      <div style="font-size:28px">🤑</div>
+      <h1>Gaming Brothers 103</h1>
+    </div>
+    <div class="nav-controls">
+      <a class="nav-btn" href="index.html">🎮 Games</a>
+      <a class="nav-btn active" href="apps.html">📱 Apps</a>
+      <a class="nav-btn" href="unblockers.html">🌐 Unblockers</a>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="apps-grid">
+      <div class="app-card" data-src="https://blookettuff.global.ssl.fastly.net/" id="blook">
+        <img src="https://avatars.githubusercontent.com/u/137687295?s=200&v=4" alt="Blookettuff">
+        <div style="font-weight:700;color:#ffd369">Blookettuff</div>
+        <div style="margin-top:8px;color:var(--muted);font-size:13px">Open the embedded app</div>
+      </div>
+    </div>
+
+    <!-- clicking a card opens the app in a new window automatically -->
+  </main>
+
+  <script>
+    (function(){
+      let selected = document.getElementById('blook');
+      const previewWrap = document.getElementById('previewWrap');
+      const previewFrame = document.getElementById('previewFrame');
+
+      // clicking a card opens the app immediately in a new tab
+      document.querySelectorAll('.app-card').forEach(c=>{
+        c.addEventListener('click', ()=>{
+          const url = c.getAttribute('data-src');
+          try{ window.open(url, '_blank'); }catch(e){ window.location.href = url }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

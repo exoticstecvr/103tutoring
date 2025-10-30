@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Unblockers</title>
+  <link rel="stylesheet" href="./style.css">
+  <style>
+    .section{max-width:1200px;margin:18px auto;padding:12px;border-radius:10px}
+    .section h3{margin:6px 0;color:#ffd369}
+    .links{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px}
+    .link{background:var(--panel);padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);display:flex;align-items:center;justify-content:space-between}
+    .status{margin-left:8px}
+    .preview{max-width:1200px;margin:8px auto;border-radius:12px;overflow:hidden;background:#000}
+    .preview iframe{width:100%;height:640px;border:0}
+    .top-actions{display:flex;gap:8px;justify-content:center;padding:12px}
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="brand">
+      <div style="font-size:28px">🤑</div>
+      <h1>Gaming Brothers 103</h1>
+    </div>
+    <div class="nav-controls">
+      <a class="nav-btn" href="index.html">🎮 Games</a>
+      <a class="nav-btn" href="apps.html">📱 Apps</a>
+      <a class="nav-btn active" href="unblockers.html">🌐 Unblockers</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- click any link to open it directly in a new window -->
+
+    <!-- Interstellar -->
+    <div class="section">
+      <h3>Interstellar</h3>
+      <div class="links" id="interstellar"></div>
+    </div>
+
+    <!-- Rammerhead -->
+    <div class="section">
+      <h3>Rammerhead</h3>
+      <div class="links" id="rammerhead"></div>
+    </div>
+
+    <!-- Holy Unblocker -->
+    <div class="section">
+      <h3>Holy Unblocker</h3>
+      <div class="links" id="holy"></div>
+    </div>
+
+    <!-- Doge Unblocker -->
+    <div class="section">
+      <h3>Doge Unblocker</h3>
+      <div class="links" id="doge"></div>
+    </div>
+
+    <!-- Xen / Sodium / Random -->
+    <div class="section">
+      <h3>Misc</h3>
+      <div class="links" id="misc"></div>
+    </div>
+
+  </main>
+
+  <script>
+    (function(){
+      const groups = {
+        interstellar: [
+          ['https://darklight.neo-space.space/','✅'],['https://learn.texasmath.org/','✅'],['https://goaerune.my.to/','✅'],['https://canvasintro.ignorelist.com/','❌'],['https://yooo.installgentoo.com/','✅'],['https://finallylol.installgentoo.com/','✅'],['https://vloxywoxy.crabdance.com/','❌'],['https://learn.readymindit.com/','✅'],['https://psddps.donhoo.com/',''],['https://clashroyale.adworldlog.com/','✅'],['https://gamergamergamer.jumpingcrab.com/','❌'],['https://www.39.theartieschaffer.com/','❌'],['https://1131311.twilightparadox.com/','❌'],['https://godlord8465.route64.de/','❌'],['https://khanhow-to-do-math.itafricagroup.com/','✅'],['https://nationalhistoryday.itafricagroup.com/','✅'],['https://labubudubaichocolatephonk.joe.dj/','✅'],['https://risdpublicdomain.strangled.net/','❌'],['https://happy2.jobvn.com','✅']
+        ],
+        rammerhead: [
+          ['https://calebisdumb.drm.hk/','✅'],['https://kmenstest.ldop.com/','❌'],['https://oneofyouis.smelly.cc/','✅'],['https://browsergames2026.tantrum.org/','❌'],['https://pass.securly.eupla.com/','✅'],['https://psgtour.psgl.cl/','✅'],['https://jonahdaman.hillbrick.net/','❌'],['https://rc-1207.z.je/','✅'],['https://damon.ndr.cl/','✅'],['https://skyward.iseasy.tw/',''],['https://imgay.ofmdirect.com/','✅'],['https://adriel.redalameda.cl/','✅'],['https://awakekirby.ofmdirect.com/','✅'],['https://rammerhead.8bit.ca/','✅'],['https://hi.fpr.net/','✅'],['https://justforhillo.radiohapure.com/','✅']
+        ],
+        holy: [
+          ['https://shopboog.com/index?cache=753072679','❌'],['https://firsttire.org/index?cache=753072679','❌'],['https://iwanttosleep.xyz/index?cache=753072679','❌'],['https://ieatwaffles.xyz/index?cache=753072679','❌'],['https://assemblymenu.xyz/index?cache=753072679','❌'],['https://runnerpromotion.org/index?cache=753072679','❌'],['https://youcantypeanythinghere.hu.blocksi.lol.cdn.cloudflare.net/index?cache=753072679','❌']
+        ],
+        doge: [
+          ['https://science.dawuiiwauidwahyuiwahuioqwd.site/','❌'],['https://5.rotate.doge.motorcycles/','✅'],['https://edu.encod.at/','✅'],['https://computer-coding.insheep.org/','✅'],['https://edu.science.astikiu.lt/','✅'],['https://alexs-special-education.0x0a.ru/','✅'],['https://work.topazgrid.xyz/','❌'],['https://login.topazgrid.xyz/','❌'],['https://edu.topazgrid.xyz/','❌'],['https://work.sr3z.com/','✅'],['https://login.sr3z.com/','✅'],['https://help.sr3z.com/','✅'],['https://edu.sr3z.com/','✅'],['https://cdn.sr3z.com/','✅'],['https://prem.deltamath.help.cdn.cloudflare.net/','✅']
+        ],
+        misc: [
+          ['https://xen.desmos.lol.cdn.cloudflare.net/','❌'],['https://xen.desmosgraphing.xyz.cdn.cloudflare.net/','✅'],['https://sodium-5h8.pages.dev/welcome','❌'],['https://suddsintime.pages.dev/welcome','❌'],['https://schoolworkclassroom.global.ssl.fastly.net/welcome','✅'],['https://diddybludisonthecalculator.global.ssl.fastly.net/welcome','✅'],['https://doingclasswork54321.global.ssl.fastly.net/welcome','✅']
+        ]
+      };
+
+      function buildList(id, items){
+        const container = document.getElementById(id);
+        items.forEach(([u,s])=>{
+          const el = document.createElement('div');
+          el.className = 'link';
+          el.innerHTML = `<div style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis"><a href="#" data-url="${u}" class="link-a">${u}</a></div><div class="status">${s || ''}</div>`;
+          container.appendChild(el);
+        });
+      }
+
+      Object.keys(groups).forEach(k=>buildList(k, groups[k]));
+
+      // clicking a link opens it immediately in a new tab
+      document.body.addEventListener('click', e=>{
+        const a = e.target.closest('.link-a');
+        if(!a) return;
+        e.preventDefault();
+        const url = a.getAttribute('data-url');
+        try{ window.open(url,'_blank'); }catch(e){ window.location.href = url }
+      });
+    })();
+  </script>
+</body>
+</html>

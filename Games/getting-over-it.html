@@ -1,0 +1,220 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Getting Over It</title>
+<style>:root{--bg:#07131a;--panel:#0b1220;--accent:#ffd369;--muted:#9aa6b2}html,body{height:100%;margin:0;background:linear-gradient(180deg,#03121a,#071623);color:#fff;font-family:Inter,Segoe UI,Arial,sans-serif}.wrap{max-width:1200px;margin:18px auto;padding:8px}header{display:flex;align-items:center;gap:12px}header a{color:var(--muted);text-decoration:none}.player-frame{background:#000;border-radius:12px;padding:12px;border:4px solid rgba(255,255,255,0.06)}.view{position:relative;height:70vh;border-radius:8px;overflow:hidden;background:#000}.view iframe{width:100%;height:100%;border:0}.controls{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;display:flex;gap:18px;background:rgba(3,6,10,0.9);padding:12px;border-radius:12px;border:2px solid rgba(255,255,255,0.06);box-shadow:0 8px 30px rgba(0,0,0,0.6);z-index:999}.btn{background:#0b1220;color:var(--accent);padding:12px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);cursor:pointer;display:flex;align-items:center;gap:8px}@media (max-width:700px){.view{height:56vh}.controls{left:8%;transform:none}}</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <a href="../index.html">◀ Back</a>
+      <script>
+// Force the back link to always go to the local site version, not the CDN
+const back = document.getElementById("backLink");
+const currentHost = window.location.origin;
+back.href = currentHost + "/index.html"; // or "/apps.html" if you want that page instead
+</script>
+      <h2 style="margin:0;color:var(--accent);padding-left:8px">Getting Over It</h2>
+    </header>
+
+    <div class="player-frame" id="playerFrame">
+      <div class="view" id="viewWrap">
+        <!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+    <script>
+  // Define your CDN base path once
+  const CDN_BASE = "https://cdn.jsdelivr.net/gh/genizy/web-port@main/getting-over-it/";
+
+  // Helper to prefix all relative paths
+  const cdn = (path) => CDN_BASE + path;
+</script>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Unity WebGL Player | Getting Over It</title>
+    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <link rel="stylesheet" href="TemplateData/style.css">
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            background: #231F20;
+        }
+
+        #unity-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="loading-text" style="color: white; font-size: 48px; font-family: cursive; text-align: center; margin-top: 20px;"> LOADING... </div>
+    <div id="unity-container" class="unity-desktop">
+        <canvas id="unity-canvas" tabindex="-1"></canvas>
+        <div id="unity-loading-bar">
+            <div id="unity-logo"></div>
+            <div id="unity-progress-bar-empty">
+                <div id="unity-progress-bar-full"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const loadingText = document.querySelector("#loading-text");
+        let totalBytes = 0;
+        let loadedBytes = 0;
+
+        function formatSize(bytes) {
+            if (bytes > 1024 * 1024 * 1024) {
+                return (bytes / (1024 * 1024 * 1024)).toFixed(2) + " GB";
+            } else if (bytes > 1024 * 1024) {
+                return (bytes / (1024 * 1024)).toFixed(2) + " MB";
+            } else if (bytes > 1024) {
+                return (bytes / 1024).toFixed(2) + " KB";
+            } else {
+                return bytes + " B";
+            }
+        }
+
+        async function fetchWithProgress(url) {
+            const response = await fetch(url);
+            const reader = response.body.getReader();
+            let chunks = [];
+            let received = 0;
+            while (true) {
+                const {
+                    done,
+                    value
+                } = await reader.read();
+                if (done) break;
+                received += value.length;
+                loadedBytes += value.length;
+                chunks.push(value);
+                const doneText = formatSize(loadedBytes);
+                const totalText = formatSize(totalBytes);
+                const percent = totalBytes > 0 ? ((loadedBytes / totalBytes) * 100).toFixed(1) : "?";
+                loadingText.textContent = `LOADING... ${doneText} / ${totalText} (${percent}%)`;
+            }
+            let fullBuffer = new Uint8Array(received);
+            let offset = 0;
+            for (let chunk of chunks) {
+                fullBuffer.set(chunk, offset);
+                offset += chunk.length;
+            }
+            return fullBuffer.buffer;
+        }
+        async function mergeFiles(parts) {
+            const buffers = await Promise.all(parts.map(fetchWithProgress));
+            return URL.createObjectURL(new Blob(buffers));
+        }
+
+        function getParts(file, count) {
+            let parts = [];
+            for (let i = 1; i <= count; i++) {
+                parts.push(file + ".part" + i);
+            }
+            return parts;
+        }
+        (async () => {
+            const dataParts = getParts("Build/GettingOverIt.data", 32);
+            const wasmParts = getParts("Build/GettingOverIt.wasm", 2);
+            const allParts = [...dataParts, ...wasmParts];
+            totalBytes = 691732588;
+            const [dataUrl, wasmUrl] = await Promise.all([
+                mergeFiles(dataParts),
+                mergeFiles(wasmParts)
+            ]);
+            var container = document.querySelector("#unity-container");
+            var canvas = document.querySelector("#unity-canvas");
+            var loadingBar = document.querySelector("#unity-loading-bar");
+            var progressBarFull = document.querySelector("#unity-progress-bar-full");
+            var warningBanner = document.querySelector("#unity-warning");
+
+            function unityShowBanner(msg, type) {
+
+            }
+
+            var buildUrl = "Build";
+            var loaderUrl = buildUrl + "/GettingOverIt.loader.js";
+            var config = {
+                dataUrl: dataUrl,
+                frameworkUrl: buildUrl + "/GettingOverIt.framework.js",
+                codeUrl: wasmUrl,
+                streamingAssetsUrl: "StreamingAssets",
+                companyName: "Bennett Foddy",
+                productName: "Getting Over It",
+                productVersion: "1.7",
+                showBanner: unityShowBanner,
+            };
+
+            if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+
+                var meta = document.createElement('meta');
+                meta.name = 'viewport';
+                meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+                document.getElementsByTagName('head')[0].appendChild(meta);
+                container.className = "unity-mobile";
+                canvas.className = "unity-mobile";
+
+            } else {
+                const canvas = document.querySelector("canvas");
+
+                function resizeCanvas() {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                    canvas.style.width = window.innerWidth + "px";
+                    canvas.style.height = window.innerHeight + "px";
+                }
+
+                window.addEventListener("resize", resizeCanvas);
+                resizeCanvas();
+            }
+
+            loadingBar.style.display = "block";
+
+            var script = document.createElement("script");
+            script.src = loaderUrl;
+            script.onload = () => {
+                createUnityInstance(canvas, config, (progress) => {
+                    progressBarFull.style.width = 100 * progress + "%";
+                }).then((unityInstance) => {
+                    loadingBar.style.display = "none";
+                    loadingText.remove();
+                }).catch((message) => {
+                    alert(message);
+                });
+            };
+
+            document.body.appendChild(script);
+        })();
+    </script>
+</body>
+
+</html>
+    </div>
+  </div>
+
+  <div class="controls">
+    
+  </div>
+
+<script>
+(function(){
+  const url = 'https://gamingbrotherstest3.vercel.app/Games/getting-over-it.html';
+  const viewWrap = document.getElementById('viewWrap');
+  document.getElementById('fullscreenBtn').addEventListener('click', async ()=>{try{ if (document.fullscreenElement) await document.exitFullscreen(); else await viewWrap.requestFullscreen(); }catch(e){console.warn(e)}});
+  document.getElementById('openNew').addEventListener('click', ()=>{const w = window.open('about:blank','_blank'); if(!w){alert('Popup blocked');return} const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Getting Over It - New Window</title><style>html,body{height:100%;margin:0;background:#000;color:#fff;font-family:Arial,Helvetica,sans-serif} iframe{position:absolute;inset:0;border:0;width:100%;height:100%}.bar{position:fixed;left:0;right:0;bottom:0;padding:8px;background:rgba(0,0,0,0.6);display:flex;gap:8px;justify-content:center}.bar button,a{background:#0b1220;color:#ffd369;padding:8px 12px;border-radius:6px;text-decoration:none;border:1px solid rgba(255,255,255,0.04)}</style></head><body><iframe src="${url}" allowfullscreen></iframe><div class="bar"><button id="back">Back to Home</button><a id="openDirect" target="_blank" rel="noopener noreferrer" href="${url}">Open Direct</a></div><script>document.getElementById('back').addEventListener('click', ()=>{try{if(window.opener && !window.opener.closed){try{window.opener.location.href = '../index.html'}catch(e){} } }finally{window.close()}})<\/script></body></html>`; w.document.open(); w.document.write(html); w.document.close();}); document.getElementById('homeBtn').addEventListener('click', ()=>{window.location.href = 'https://gamingbrotherstest3.vercel.app/index.html'});
+})();
+</script>
+</body>
+</html>
+
