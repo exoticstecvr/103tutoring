@@ -1,0 +1,180 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Crazy cattle 3D</title>
+<style>:root{--bg:#07131a;--panel:#0b1220;--accent:#ffd369;--muted:#9aa6b2}html,body{height:100%;margin:0;background:linear-gradient(180deg,#03121a,#071623);color:#fff;font-family:Inter,Segoe UI,Arial,sans-serif}.wrap{max-width:1200px;margin:18px auto;padding:8px}header{display:flex;align-items:center;gap:12px}header a{color:var(--muted);text-decoration:none}.player-frame{background:#000;border-radius:12px;padding:12px;border:4px solid rgba(255,255,255,0.06)}.view{position:relative;height:70vh;border-radius:8px;overflow:hidden;background:#000}.view iframe{width:100%;height:100%;border:0}.controls{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;display:flex;gap:18px;background:rgba(3,6,10,0.9);padding:12px;border-radius:12px;border:2px solid rgba(255,255,255,0.06);box-shadow:0 8px 30px rgba(0,0,0,0.6);z-index:999}.btn{background:#0b1220;color:var(--accent);padding:12px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);cursor:pointer;display:flex;align-items:center;gap:8px}@media (max-width:700px){.view{height:56vh}.controls{left:8%;transform:none}}</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <a href="../index.html">◀ Back</a>
+      <h2 style="margin:0;color:var(--accent);padding-left:8px">Crazy Cattle 3D</h2>
+    </header>
+
+    <div class="player-frame" id="playerFrame">
+      <div class="view" id="viewWrap">
+        <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base href="https://cdn.jsdelivr.net/gh/genizy/web-port@main/buckshot-roulette/">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+    <title>Buckshot Roulette</title>
+    <link rel="stylesheet" href="style.css">
+    <link id="-gd-engine-icon" rel="icon" type="image/png" href="buckshot-roulette.icon.png" />
+    <link rel="apple-touch-icon" href="buckshot-roulette.apple-touch-icon.png" />
+</head>
+
+<body>
+    <script src="main.js"></script>
+    <div id="loading-text" style="color: white; font-family: cursive; font-size: 48px; text-align: center; margin-top: 20px;">LOADING...</div>
+    <canvas id="canvas"> Your browser does not support the canvas tag. </canvas>
+    <noscript> Your browser does not support JavaScript. </noscript>
+    <div id="status">
+        <img id="status-splash" class="show-image--true fullsize--true use-filter--true" src="buckshot-roulette.png" alt="">
+        <progress id="status-progress"></progress>
+        <div id="status-notice"></div>
+    </div>
+    <script src="buckshot-roulette.js"></script>
+    <script>
+        const GODOT_CONFIG = {
+            "args": [],
+            "canvasResizePolicy": 2,
+            "ensureCrossOriginIsolationHeaders": false,
+            "executable": "buckshot-roulette",
+            "experimentalVK": false,
+            "fileSizes": {
+                "buckshot-roulette.pck": 344705792,
+                "buckshot-roulette.wasm": 43444261
+            },
+            "focusCanvas": false,
+            "gdextensionLibs": []
+        };
+        const GODOT_THREADS_ENABLED = false;
+        const engine = new Engine(GODOT_CONFIG);
+
+        function run() {
+            const loadingText = document.getElementById('loading-text');
+            const statusOverlay = document.getElementById('status');
+            const statusProgress = document.getElementById('status-progress');
+            const statusNotice = document.getElementById('status-notice');
+            loadingText.remove();
+            let initializing = true;
+            let statusMode = '';
+
+            function setStatusMode(mode) {
+                if (statusMode === mode || !initializing) {
+                    return;
+                }
+                if (mode === 'hidden') {
+                    statusOverlay.remove();
+                    initializing = false;
+                    return;
+                }
+                statusOverlay.style.visibility = 'visible';
+                statusProgress.style.display = mode === 'progress' ? 'block' : 'none';
+                statusNotice.style.display = mode === 'notice' ? 'block' : 'none';
+                statusMode = mode;
+            }
+
+            function setStatusNotice(text) {
+                while (statusNotice.lastChild) {
+                    statusNotice.removeChild(statusNotice.lastChild);
+                }
+                const lines = text.split('\n');
+                lines.forEach((line) => {
+                    statusNotice.appendChild(document.createTextNode(line));
+                    statusNotice.appendChild(document.createElement('br'));
+                });
+            }
+
+            function displayFailureNotice(err) {
+                console.error(err);
+                if (err instanceof Error) {
+                    setStatusNotice(err.message);
+                } else if (typeof err === 'string') {
+                    setStatusNotice(err);
+                } else {
+                    setStatusNotice('An unknown error occurred.');
+                }
+                setStatusMode('notice');
+                initializing = false;
+            }
+            const missing = Engine.getMissingFeatures({
+                threads: GODOT_THREADS_ENABLED,
+            });
+            if (missing.length !== 0) {
+                if (GODOT_CONFIG['serviceWorker'] && GODOT_CONFIG['ensureCrossOriginIsolationHeaders'] && 'serviceWorker' in navigator) {
+                    let serviceWorkerRegistrationPromise;
+                    try {
+                        serviceWorkerRegistrationPromise = navigator.serviceWorker.getRegistration();
+                    } catch (err) {
+                        serviceWorkerRegistrationPromise = Promise.reject(new Error('Service worker registration failed.'));
+                    }
+                    // There's a chance that installing the service worker would fix the issue
+                    Promise.race([
+                        serviceWorkerRegistrationPromise.then((registration) => {
+                            if (registration != null) {
+                                return Promise.reject(new Error('Service worker already exists.'));
+                            }
+                            return registration;
+                        }).then(() => engine.installServiceWorker()),
+                        // For some reason, `getRegistration()` can stall
+                        new Promise((resolve) => {
+                            setTimeout(() => resolve(), 2000);
+                        }),
+                    ]).then(() => {
+                        // Reload if there was no error.
+                        window.location.reload();
+                    }).catch((err) => {
+                        console.error('Error while registering service worker:', err);
+                    });
+                } else {
+                    // Display the message as usual
+                    const missingMsg = 'Error\nThe following features required to run Godot projects on the Web are missing:\n';
+                    displayFailureNotice(missingMsg + missing.join('\n'));
+                }
+            } else {
+                setStatusMode('progress');
+                engine.startGame({
+                    'onProgress': function (current, total) {
+                        if (current > 0 && total > 0) {
+                            statusProgress.value = current;
+                            statusProgress.max = total;
+                        } else {
+                            statusProgress.removeAttribute('value');
+                            statusProgress.removeAttribute('max');
+                        }
+                    },
+                }).then(() => {
+                    setStatusMode('hidden');
+                }, displayFailureNotice);
+            }
+        };
+        window.godotRunStart = run;
+    </script>
+</body>
+
+</html>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="btn" id="openNew">Open (new window)</button>
+    <button class="btn" id="fullscreenBtn">Fullscreen</button>
+    <button class="btn" id="homeBtn">Home</button>
+  </div>
+
+<script>
+(function(){
+  const url = 'https://1games.io/game/crazy-cattle-3d/"';
+  const viewWrap = document.getElementById('viewWrap');
+  document.getElementById('fullscreenBtn').addEventListener('click', async ()=>{try{ if (document.fullscreenElement) await document.exitFullscreen(); else await viewWrap.requestFullscreen(); }catch(e){console.warn(e)}});
+  document.getElementById('openNew').addEventListener('click', ()=>{const w = window.open('about:blank','_blank'); if(!w){alert('Popup blocked');return} const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Crazy Cattle 3D - New Window</title><style>html,body{height:100%;margin:0;background:#000;color:#fff;font-family:Arial,Helvetica,sans-serif} iframe{position:absolute;inset:0;border:0;width:100%;height:100%}.bar{position:fixed;left:0;right:0;bottom:0;padding:8px;background:rgba(0,0,0,0.6);display:flex;gap:8px;justify-content:center}.bar button,a{background:#0b1220;color:#ffd369;padding:8px 12px;border-radius:6px;text-decoration:none;border:1px solid rgba(255,255,255,0.04)}</style></head><body><iframe src="${url}" allowfullscreen></iframe><div class="bar"><button id="back">Back to Home</button><a id="openDirect" target="_blank" rel="noopener noreferrer" href="${url}">Open Direct</a></div><script>document.getElementById('back').addEventListener('click', ()=>{try{if(window.opener && !window.opener.closed){try{window.opener.location.href = '../index.html'}catch(e){} } }finally{window.close()}})<\/script></body></html>`; w.document.open(); w.document.write(html); w.document.close();}); document.getElementById('homeBtn').addEventListener('click', ()=>{window.location.href = '../index.html'});
+})();
+</script>
+</body>
+</html>
