@@ -6,41 +6,43 @@
   <title>Apps</title>
   <link rel="stylesheet" href="./style.css">
   <style>
-    .apps-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr; /* force 2 columns side by side */
-      gap: 18px;
-      padding: 18px;
-    }
-    .app-card {
-      background: var(--panel);
-      border-radius: 12px;
-      padding: 12px;
-      text-align: center;
-      border: 1px solid rgba(255,255,255,0.03);
-      cursor: pointer;
-    }
-    .app-card img {
-      width: 96px;
-      height: 96px;
-      border-radius: 12px;
-      object-fit: cover;
-      display: block;
-      margin: 0 auto 12px;
-    }
-    .preview {
-      max-width: 1200px;
-      margin: 18px auto;
-      border-radius: 12px;
-      overflow: hidden;
-      background: #000;
-    }
-    .preview iframe {
-      width: 100%;
-      height: 640px;
-      border: 0;
-    }
-  </style>
+  .apps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, auto));
+    justify-content: center;
+    gap: 18px;
+    padding: 18px;
+  }
+  .app-card {
+    background: var(--panel);
+    border-radius: 12px;
+    padding: 12px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.03);
+    cursor: pointer;
+  }
+  .app-card img {
+    width: 96px;
+    height: 96px;
+    border-radius: 12px;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto 12px;
+  }
+  .preview {
+    max-width: 1200px;
+    margin: 18px auto;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #000;
+  }
+  .preview iframe {
+    width: 100%;
+    height: 640px;
+    border: 0;
+  }
+</style>
+
 </head>
 <body>
   <header class="navbar">
