@@ -6,81 +6,11 @@
   <title>Apps</title>
   <link rel="stylesheet" href="./style.css">
   <style>
-    :root {
-      --bg:#07131a;
-      --panel:#0b1220;
-      --accent:#ffd369;
-      --muted:#9aa6b2;
-    }
-    body {
-      margin:0;
-      background:var(--bg);
-      color:white;
-      font-family:sans-serif;
-    }
-    .navbar {
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      background:var(--panel);
-      padding:10px 20px;
-      border-bottom:1px solid rgba(255,255,255,0.1);
-    }
-    .brand { display:flex; align-items:center; gap:8px; }
-    .nav-controls a {
-      color:white;
-      text-decoration:none;
-      margin:0 8px;
-      padding:6px 10px;
-      border-radius:6px;
-      transition:0.2s;
-    }
-    .nav-controls a:hover { background:rgba(255,255,255,0.1); }
-    .nav-controls .active { background:var(--accent); color:black; }
-
-    /* --- Grid fixes --- */
-    .apps-grid {
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); /* 2 side by side on wide screens */
-      gap:18px;
-      padding:18px;
-      justify-items:center;
-    }
-
-    .app-card {
-      background:var(--panel);
-      border-radius:12px;
-      padding:12px;
-      text-align:center;
-      border:1px solid rgba(255,255,255,0.03);
-      cursor:pointer;
-      width:100%;
-      max-width:360px;
-      transition:transform .2s, box-shadow .2s;
-    }
-    .app-card:hover {
-      transform:translateY(-4px);
-      box-shadow:0 0 12px rgba(255,211,105,0.3);
-    }
-
-    .app-card img {
-      width:96px;
-      height:96px;
-      border-radius:12px;
-      object-fit:cover;
-      display:block;
-      margin:0 auto 12px;
-    }
-    .app-card-title {
-      font-weight:700;
-      color:var(--accent);
-      font-size:18px;
-    }
-    .app-card-desc {
-      margin-top:8px;
-      color:var(--muted);
-      font-size:13px;
-    }
+    .apps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;padding:18px}
+    .app-card{background:var(--panel);border-radius:12px;padding:12px;text-align:center;border:1px solid rgba(255,255,255,0.03);cursor:pointer}
+    .app-card img{width:96px;height:96px;border-radius:12px;object-fit:cover;display:block;margin:0 auto 12px}
+    .preview{max-width:1200px;margin:18px auto;border-radius:12px;overflow:hidden;background:#000}
+    .preview iframe{width:100%;height:640px;border:0}
   </style>
 </head>
 <body>
@@ -99,27 +29,32 @@
 
   <main id="main">
     <div class="apps-grid">
-      <div class="app-card" data-src="https://blooktuff.global.ssl.fastly.net/">
+      <div class="app-card" data-src="https://blooktuff.global.ssl.fastly.net/" id="blook">
         <img src="https://avatars.githubusercontent.com/u/137687295?s=200&v=4" alt="Blookettuff">
-        <div class="app-card-title">Blookettuff</div>
-        <div class="app-card-desc">Blooket bot/hacks</div>
+        <div style="font-weight:700;color:#ffd369">Blookettuff</div>
+        <div style="margin-top:8px;color:var(--muted);font-size:13px">Blooket bot/hacks</div>
       </div>
-
-      <div class="app-card" data-src="https://ratgames.vercel.app/viewer.html?site=https%3A%2F%2Fweb.cloudmoonapp.com%2F">
+      <div class="app-card" data-src="https://ratgames.vercel.app/viewer.html?site=https%3A%2F%2Fweb.cloudmoonapp.com%2F" id="blook">
         <img src="https://avatars.githubusercontent.com/u/137687295?s=200&v=4" alt="Cloudmoon">
-        <div class="app-card-title">Cloud Moon</div>
-        <div class="app-card-desc">Cloud gaming/Roblox and Fortnite</div>
+        <div style="font-weight:700;color:#ffd369">Cloud Moon</div>
+        <div style="margin-top:8px;color:var(--muted);font-size:13px">Cloud gaming/roblox and fortnite</div>
       </div>
     </div>
+
+    <!-- clicking a card opens the app in a new window automatically -->
   </main>
 
   <script>
     (function(){
-      document.querySelectorAll('.app-card').forEach(card=>{
-        card.addEventListener('click', ()=>{
-          const url = card.getAttribute('data-src');
-          try { window.open(url, '_blank'); }
-          catch(e) { window.location.href = url; }
+      let selected = document.getElementById('blook');
+      const previewWrap = document.getElementById('previewWrap');
+      const previewFrame = document.getElementById('previewFrame');
+
+      // clicking a card opens the app immediately in a new tab
+      document.querySelectorAll('.app-card').forEach(c=>{
+        c.addEventListener('click', ()=>{
+          const url = c.getAttribute('data-src');
+          try{ window.open(url, '_blank'); }catch(e){ window.location.href = url }
         });
       });
     })();
