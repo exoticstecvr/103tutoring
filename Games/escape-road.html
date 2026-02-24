@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Escape road</title>
+<title>Escape Road</title>
 <style>
   :root{--bg:#07131a;--panel:#0b1220;--accent:#ffd369;--muted:#9aa6b2}
   html,body{height:100%;margin:0;background:linear-gradient(180deg,#03121a,#071623);color:#fff;font-family:Inter,Segoe UI,Arial,sans-serif}
@@ -17,7 +17,56 @@
   .btn{background:#0b1220;color:var(--accent);padding:12px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);cursor:pointer;display:flex;align-items:center;gap:8px}
   .btn small{color:var(--muted);font-size:12px}
   .right{margin-left:auto}
-  @media (max-width:700px){.view{height:56vh}.controls{left:8%;transform:none}}
+
+  /* ────────────── Mod Menu Styles ────────────── */
+  #modMenu {
+    position: fixed;
+    top: 80px;
+    right: 16px;
+    background: rgba(11,18,32,0.92);
+    border: 1px solid rgba(255,211,105,0.25);
+    border-radius: 10px;
+    padding: 12px 16px;
+    color: #ffd369;
+    font-family: Arial, sans-serif;
+    z-index: 9999;
+    min-width: 180px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.7);
+    user-select: none;
+  }
+  #modMenu h3 {
+    margin: 0 0 10px 0;
+    font-size: 15px;
+    text-align: center;
+    color: #ffd369;
+  }
+  #modMenu button {
+    display: block;
+    width: 100%;
+    margin: 6px 0;
+    padding: 8px;
+    background: #0f1a2e;
+    color: #ffd369;
+    border: 1px solid #3a5c8c;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  #modMenu button:hover {
+    background: #1a2f52;
+  }
+  #modMenu small {
+    display: block;
+    text-align: center;
+    margin-top: 8px;
+    color: #9aa6b2;
+    font-size: 11px;
+  }
+  @media (max-width:700px){
+    .view{height:56vh}
+    .controls{left:8%;transform:none}
+    #modMenu{right:8px;top:70px;font-size:13px;min-width:150px;padding:10px}
+  }
 </style>
 </head>
 <body>
@@ -26,12 +75,22 @@
       <a href="../index.html">◀ Back</a>
       <h2 style="margin:0;color:var(--accent);padding-left:8px">Escape Road</h2>
     </header>
-
     <div class="player-frame" id="playerFrame">
       <div class="view" id="viewWrap">
         <iframe id="gameFrame" src="https://1games.io/game/escape-road/" allowfullscreen sandbox="allow-scripts allow-forms allow-same-origin"></iframe>
       </div>
     </div>
+  </div>
+
+  <!-- Mod Menu Panel -->
+  <div id="modMenu">
+    <h3>Mod Menu</h3>
+    <button onclick="applyCheat('money')">+100 000 Coins / Money</button>
+    <button onclick="applyCheat('score')">+1 000 000 Score</button>
+    <button onclick="applyCheat('god')">God Mode (no crash)</button>
+    <button onclick="applyCheat('speed')">Ultra Speed</button>
+    <button onclick="applyCheat('reset')">Reset Cheats</button>
+    <small>works only if game loads globals</small>
   </div>
 
   <div class="controls">
@@ -57,7 +116,6 @@
   });
 
   document.getElementById('openNew').addEventListener('click', ()=>{
-    // open a blank window and write a minimal wrapper that hosts the game iframe and a Back to Home button
     const w = window.open('about:blank','_blank');
     if (!w) { alert('Popup blocked. Allow popups for this site.'); return; }
     const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${document.title} - New Window</title>
@@ -72,8 +130,7 @@
         document.getElementById('back').addEventListener('click', ()=>{
           try{
             if(window.opener && !window.opener.closed){
-              // navigate opener to index
-              try{ window.opener.location.href = '../index.html'; }catch(e){ /* ignore */ }
+              try{ window.opener.location.href = '../index.html'; }catch(e){}
             }
           }finally{
             window.close();
@@ -89,6 +146,84 @@
   document.getElementById('homeBtn').addEventListener('click', ()=>{
     window.location.href = '../index.html';
   });
+
+  // ────────────── Mod Menu Logic ──────────────
+  window.applyCheat = function(type) {
+    try {
+      // Try to reach the game window (iframe contentWindow)
+      const g = gameFrame.contentWindow || gameFrame.contentDocument.defaultView;
+      if (!g) {
+        alert("Cannot access game window (security restriction?)");
+        return;
+      }
+
+      let target = null;
+
+      // Common global objects in Escape Road / similar .io car games
+      const candidates = [
+        g.game, g.Game, g.player, g.Player, g.car, g.Car,
+        g.GameManager, g.ScoreManager, g.GameState, g.state,
+        g.window.game, g.window.Game, g.window.player
+      ];
+
+      for (let obj of candidates) {
+        if (obj && typeof obj === 'object') {
+          target = obj;
+          break;
+        }
+      }
+
+      if (!target) {
+        // Last resort: poll common names directly on window
+        target = g;
+      }
+
+      switch(type) {
+        case 'money':
+        case 'coins':
+          if (target.coins !== undefined) target.coins = (target.coins || 0) + 100000;
+          else if (target.money !== undefined) target.money = (target.money || 0) + 100000;
+          else if (target.cash !== undefined) target.cash += 100000;
+          else if (target.score !== undefined) target.score += 100000;
+          else alert("Couldn't find coins/money variable");
+          break;
+
+        case 'score':
+          if (target.score !== undefined) target.score += 1000000;
+          else if (target.distance !== undefined) target.distance += 1000000;
+          else alert("Couldn't find score/distance");
+          break;
+
+        case 'god':
+          if (target.invincible !== undefined) target.invincible = true;
+          else if (target.godMode !== undefined) target.godMode = true;
+          else if (target.noCrash !== undefined) target.noCrash = true;
+          else if (target.health !== undefined) target.health = Infinity;
+          else if (target.crash !== undefined) target.crash = () => {};
+          else alert("Couldn't enable god mode");
+          break;
+
+        case 'speed':
+          if (target.speed !== undefined) target.speed = 25;
+          else if (target.maxSpeed !== undefined) target.maxSpeed = 60;
+          else if (target.playerSpeed !== undefined) target.playerSpeed = 40;
+          else alert("Couldn't change speed");
+          break;
+
+        case 'reset':
+          if (target.invincible !== undefined) target.invincible = false;
+          if (target.godMode !== undefined) target.godMode = false;
+          if (target.speed !== undefined && target.defaultSpeed) target.speed = target.defaultSpeed;
+          alert("Some cheats reset (reload page for full reset)");
+          break;
+      }
+
+      console.log("[Mod] Cheat applied:", type);
+    } catch(e) {
+      console.error(e);
+      alert("Error applying cheat\nMost likely cross-origin block or game not exposing variables.\nTry opening in new window instead.");
+    }
+  };
 
 })();
 </script>
